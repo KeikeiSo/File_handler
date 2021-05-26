@@ -1,2 +1,2 @@
 # File_handler
- An small application that duplicate each senetence in a pdf or docx file four times
+ An small application using python tkinter that duplicate each senetence in a pdf or docx file four times
