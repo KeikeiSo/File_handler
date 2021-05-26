@@ -63,7 +63,7 @@ class SentenceRepeater(tk.Frame):
 
     def selectdocx(self):
         file = fd.askopenfile(filetypes=(
-            ('PDF files', '*.pdf'), ('All files', '*.*')))
+            ('Docx files', '*.docx'), ('All files', '*.*')))
 
 
 """ main """
