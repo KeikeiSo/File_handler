@@ -12,16 +12,14 @@ import os
 import sys
 
 
-class Repeater(tk.Frame):
+class SentenceRepeater(tk.Frame):
     def __init__(self, master=None):
         super().__init__(master)
         self.master = master
         self.pack()
 
         # create title and icon
-        self.master.title("Sudoku")
-        icon = tk.PhotoImage(file="llama.png")
-        self.master.iconphoto(False, icon)
+        self.master.title("Sentence Repeater")
 
         # create canvas
         self.canvas = tk.Canvas(self, bg="white", width=400, height=300)
@@ -30,5 +28,5 @@ class Repeater(tk.Frame):
 
 """ main """
 root = tk.Tk()
-canvas = Repeater(master=root)
+canvas = SentenceRepeater(master=root)
 canvas.mainloop()
