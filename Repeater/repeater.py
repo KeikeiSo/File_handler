@@ -9,8 +9,6 @@ author: Qiqi Su
 """ Import statements """
 import tkinter as tk
 from tkinter import filedialog as fd
-import os
-import sys
 
 
 class SentenceRepeater(tk.Frame):
@@ -58,11 +56,16 @@ class SentenceRepeater(tk.Frame):
                                                                 window=self.select_docx_btn)
 
     def selectpdf(self):
-        file = fd.askopenfile(filetypes=(
+        filepath = fd.askopenfilename(filetypes=(
             ('PDF files', '*.pdf'), ('All files', '*.*')))
+        if filepath:
+            print(filepath)
+            return filepath
+        else:
+            print("File not found")
 
     def selectdocx(self):
-        file = fd.askopenfile(filetypes=(
+        filename = fd.askopenfilename(filetypes=(
             ('Docx files', '*.docx'), ('All files', '*.*')))
 
 
