@@ -65,8 +65,13 @@ class SentenceRepeater(tk.Frame):
             print("File not found")
 
     def selectdocx(self):
-        filename = fd.askopenfilename(filetypes=(
+        filepath = fd.askopenfilename(filetypes=(
             ('Docx files', '*.docx'), ('All files', '*.*')))
+        if filepath:
+            print(filepath)
+            return filepath
+        else:
+            print("File not found")
 
 
 """ main """
