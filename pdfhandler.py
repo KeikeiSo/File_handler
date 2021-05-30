@@ -97,10 +97,13 @@ def search_sentence(str1, str2):
                 return -1
     except Exception:
         s = str1.split(",")
-        y = re.search(s[0], str2)
-        if y:
-            return y.start()
-        else:
+        try:
+            y = re.search(s[0], str2)
+            if y:
+                return y.start()
+            else:
+                return -1
+        except Exception:
             return -1
 
 # return a string of text with each sentence repeated
@@ -157,13 +160,19 @@ def sentence_repeater(text, sentences, frequency):
     new_text = new_text.replace('‘', "\'").replace('’', "\'")
     new_text = new_text.replace('—', '--').replace('–', '-')
     new_text = new_text.replace('©', 'copyright_')
+    new_text = new_text.replace('\u2026', '...')
+    new_text = new_text.replace('\u20ac', 'euro')
+    new_text = new_text.replace('\u2020', 'DAGGER')
+
     
     return new_text.replace('\n\n', '\n')
 
 def split_for(str, pos):
     t = len(str) // pos
+    if t == 0:
+        return str
     for i in range(t):
-        d = pos*(i+1)
+        d = pos*(i+1)-1
         while(str[d] != " "):
             d += 1
             if d >= len(str)-1:
@@ -229,6 +238,6 @@ if __name__ == '__main__':
     string_to_pdf(repeated)
     pdf.close()
     """
-    pdf_repeater("C:/Users/calli/OneDrive/Desktop/LA1040_VLE.pdf", 
-    12, 13, 2, "C:/Users/calli/OneDrive/Desktop/testing.pdf", font_size=12)
+    pdf_repeater("C:/Users/calli/Testing/LA1040_VLE.pdf", 
+    12, 283, 2, "C:/Users/calli/testing.pdf", font_size=12)
 
