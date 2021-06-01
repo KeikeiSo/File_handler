@@ -1,13 +1,14 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+
 block_cipher = None
 
 
 a = Analysis(['repeater.py'],
              pathex=['C:\\Users\\calli\\OneDrive\\Documents\\GitHub\\File_handler'],
              binaries=[],
-             datas=[],
-             hiddenimports=[],
+             datas=['./pdfhandler.py', './dochandler.py'],
+             hiddenimports=['pyttsx3.drivers'],
              hookspath=[],
              runtime_hooks=[],
              excludes=[],
