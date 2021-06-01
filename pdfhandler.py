@@ -52,6 +52,7 @@ def extract_sentences(
     for line in page.lines:
         if line["linewidth"] >= 1:
             delimiter = line["top"]
+            
     if delimiter != 0:
         for char in chars:
             if char["bottom"] < delimiter:
@@ -76,10 +77,56 @@ def extract_sentences(
     coll = "\n".join(lines)
 
     coll = coll.replace('!', '.').replace('?', '.')
+
+    coll = coll.replace('i.e.', 'that is ').replace('e.g.', 'for example ')
     
     sentences = tokenizer.tokenize(coll)
 
     return sentences
+
+def extract_content(
+    page,
+    x_tolerance=DEFAULT_X_TOLERANCE,
+    y_tolerance=DEFAULT_Y_TOLERANCE,
+):
+    # preprocess the list of char objects
+    chars = page.chars
+    chars = to_list(chars)
+
+    if len(chars) == 0:
+        return None
+
+    # only get characters above the line if there is one
+    delimiter = 0
+    for line in page.lines:
+        if line["linewidth"] >= 1:
+            delimiter = line["top"]
+    
+    content = []
+    if delimiter != 0:
+        for char in chars:
+            if char["bottom"] < delimiter:
+                content.append(char)
+    else:
+        content = chars
+
+    # grouping different lines
+    doctop_clusters = cluster_objects(content, "doctop", y_tolerance)
+
+    # get each line by joinning the chars into words
+    lines = (collate_line(line_chars, x_tolerance)
+             for line_chars in doctop_clusters)
+
+    coll = "\n".join(lines)
+
+    coll = coll.replace('!', '.').replace('?', '.')
+
+    coll = coll.replace('i.e.', 'that is ').replace('e.g.', 'for example ')
+    
+    content = tokenizer.tokenize(coll)
+
+    return content
+
 
 # helper function for sentence_repeater
 # return the starting index (-1 if not found)
@@ -106,23 +153,23 @@ def search_sentence(str1, str2):
         except Exception:
             return -1
 
-# return a string of text with each sentence repeated
-def sentence_repeater(text, sentences, frequency):
-    text = text.replace('!', '.').replace('?', '.')
-    context = tokenizer.tokenize(text)
+# return a list of tokenized text with each sentence repeated
+def sentence_repeater(page, frequency):
+    context = extract_content(page)
+    sentences = extract_sentences(page)
     
     """
-    text_file = open("C:/Users/calli/OneDrive/Desktop/text.txt", "w")
+    text_file = open("C:/Users/calli/Testing/text.txt", "w")
     context = [sentence.replace('\n', ' ').replace('  ', ' ') for sentence in context]
     text_file.write("\n".join(context))
     text_file.close()
 
-    text_file = open("C:/Users/calli/OneDrive/Desktop/sentences.txt", "w")
+    text_file = open("C:/Users/calli/Testing/sentences.txt", "w")
     sentences = [sentence.replace('\n', ' ').replace('  ', ' ') for sentence in sentences]
     text_file.write("\n".join(sentences))
     text_file.close()
     """
-    
+
     index = 0
 
     # find the place first sentence match
@@ -153,8 +200,11 @@ def sentence_repeater(text, sentences, frequency):
             else:
                 break
 
-    new_text = " ".join(context)
+    return context
 
+def organize_for_pdf(context):
+    new_text = " ".join(context)
+    
     # getting rid of special character that cannot be printed to pdf by fpdf
     new_text = new_text.replace('“', '\"').replace('”', '\"')
     new_text = new_text.replace('‘', "\'").replace('’', "\'")
@@ -197,15 +247,11 @@ def pdf_repeater(filepath, start, end, frequency, new_filepath, font_size=12):
 
     pages = pdf.pages[start:end]
     for page in pages:
-        text = page.extract_text(x_tolerance=2, y_tolerance=3)
-        sentences = extract_sentences(page)
-        """
-        text_file = open("C:/Users/calli/OneDrive/Desktop/testing.txt", "w")
-        sentences = [sentence.replace('\n', ' ') for sentence in sentences]
-        text_file.write("\n".join(sentences))
-        text_file.close()
-        """
-        repeated = sentence_repeater(text, sentences, frequency)
+
+        context = sentence_repeater(page, frequency)
+        repeated = organize_for_pdf(context)
+
+
         new_text = trim_text(repeated, 90)
 
         line_index = 1
@@ -218,6 +264,19 @@ def pdf_repeater(filepath, start, end, frequency, new_filepath, font_size=12):
 
     new_pdf.close()
     pdf.close()
+
+# return a list of content of pages in the pdf with sentences repeated
+def pdf_to_text(pages, start, end, frequency):
+    sections = []
+    pages = pages[start:end]
+    for page in pages:
+        section = sentence_repeater(page, frequency)
+        sections.append(section) 
+    return sections
+
+def get_pages(filepath):
+    pdf = pdfplumber.open(filepath)
+    return pdf.pages
     
 """ main """
 if __name__ == '__main__':
@@ -239,5 +298,5 @@ if __name__ == '__main__':
     pdf.close()
     """
     pdf_repeater("C:/Users/calli/Testing/LA1040_VLE.pdf", 
-    12, 283, 2, "C:/Users/calli/testing.pdf", font_size=12)
+    12, 13, 2, "C:/Users/calli/Testing/testing.pdf", font_size=12)
 
