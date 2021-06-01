@@ -69,7 +69,6 @@ class SentenceRepeater(tk.Frame):
         filepath = fd.askopenfilename(filetypes=(
             ('PDF files', '*.pdf'), ('All files', '*.*')))
         if filepath:
-            print(filepath)
             self.open_pdf_gui(filepath)
             return filepath
         else:
@@ -79,7 +78,6 @@ class SentenceRepeater(tk.Frame):
         filepath = fd.askopenfilename(filetypes=(
             ('Docx files', '*.docx'), ('All files', '*.*')))
         if filepath:
-            print(filepath)
             return filepath
         else:
             print("File not found")
@@ -103,13 +101,12 @@ class SentenceRepeater(tk.Frame):
         # from page to page created
         self.pdf_pages = get_pages(filepath)
         num_pages = len(self.pdf_pages)
-        print(num_pages)
         begin = tk.StringVar(root)
-        begin.set("0")
-        self.from_ = tk.Spinbox(root, from_=0, to=num_pages, textvariable=begin, wrap=True)
+        begin.set("1")
+        self.from_ = tk.Spinbox(root, from_=1, to=num_pages, textvariable=begin, wrap=True)
         end = tk.StringVar(root)
         end.set(str(num_pages))
-        self.to = tk.Spinbox(root, from_=0, to=num_pages, textvariable=end, wrap=True)
+        self.to = tk.Spinbox(root, from_=1, to=num_pages, textvariable=end, wrap=True)
         self.frommsg = self.canvas.create_text(90, 170, text="From page: ", font=("Cursive", 10), fill="black")
         self.from_window = self.canvas.create_window(150, 170, width=50, window=self.from_)
         self.tomsg = self.canvas.create_text(250, 170, text="To page: ", font=("Cursive", 10), fill="black")
@@ -123,18 +120,18 @@ class SentenceRepeater(tk.Frame):
         self.canvas.create_window(200, 270, width=140, window=self.submit_pdf_btn)
 
     def list_to_text(self, pages):
-        text = ""
+        content = []
         for page in pages:
-            for sentence in page:
-                text = text + '\n' + sentence
+            content.append('\n'.join(page))
+        text = '\n'.join(content)
         return text
     
     def submit_pdf(self):
         curr_directory = os.getcwd() # will get current working directory
         output = fd.asksaveasfilename(initialdir = curr_directory,\
             title = "Select file",filetypes = (("mp3 files","*.mp3"),("all files","*.*")))
-        start = int(self.from_.get())
-        end = int(self.to.get()) + 1
+        start = int(self.from_.get()) - 1
+        end = int(self.to.get()) 
         freq = int(self.spinbox.get())
         pages = pdf_to_text(self.pdf_pages, start, end, freq)
         text = self.list_to_text(pages)
