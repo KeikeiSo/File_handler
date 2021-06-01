@@ -2,11 +2,14 @@
  An small application using python tkinter that duplicate each senetence in a pdf or docx file four times
 
 # Installation
-Clone or download this project.
+1. Clone or download this project.
 
-Create an isolated Python environment and make sure the required packages are installed using the requirement.txt file.
+2. Create an isolated Python environment
 
-On Windows:
-	type in the command prompt: pip install -r requirement.txt
+3. On Windows type in the command prompt: pip install -r requirement.txt
 
-Then run the python script repeater.py
+4. Then run the python script repeater.py
+
+OR
+
+download the repeater.exe in build
