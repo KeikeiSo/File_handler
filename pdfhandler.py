@@ -250,8 +250,6 @@ def pdf_repeater(filepath, start, end, frequency, new_filepath, font_size=12):
 
         context = sentence_repeater(page, frequency)
         repeated = organize_for_pdf(context)
-
-
         new_text = trim_text(repeated, 90)
 
         line_index = 1
@@ -271,7 +269,18 @@ def pdf_to_text(pages, start, end, frequency):
     pages = pages[start:end]
     for page in pages:
         section = sentence_repeater(page, frequency)
-        sections.append(section) 
+        sections.append(section)
+    
+    content = []
+    for section in sections:
+        content.append('\n'.join(section))
+    text = '\n'.join(content) 
+    text = trim_text(text, 90)
+
+    text_file = open("C:/Users/calli/Testing/text.txt", "w")
+    text_file.write(text)
+    text_file.close()
+
     return sections
 
 def get_pages(filepath):
