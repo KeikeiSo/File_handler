@@ -12,7 +12,7 @@ from tkinter import filedialog as fd
 from pdfhandler import pdf_to_text, get_pages
 import os
 import pyttsx3
-
+from dochandler import doc_repeater
 
 class SentenceRepeater(tk.Frame):
     def __init__(self, master=None):
@@ -43,9 +43,12 @@ class SentenceRepeater(tk.Frame):
         self.select_docx_btn = tk.Button(root, text="Select Docx file", font=("Times", 15, "bold roman"),
                                          width=20, fg="white", bg="red", command=self.selectdocx)
         
-        # create submit button
+        # create pdf submit button
         self.submit_pdf_btn = tk.Button(root, text="Save as mp3", font=("Times", 15, "bold roman"),
                                          width=20, fg="white", bg="red", command=self.submit_pdf)
+        # create doc submit button
+        self.submit_doc_btn = tk.Button(root, text="Save as document", font=("Times", 15, "bold roman"),
+                                         width=20, fg="white", bg="red", command=self.submit_doc)
         
         # create spinbox of voice gender
         self.gender = tk.StringVar(root)
@@ -78,9 +81,11 @@ class SentenceRepeater(tk.Frame):
         filepath = fd.askopenfilename(filetypes=(
             ('Docx files', '*.docx'), ('All files', '*.*')))
         if filepath:
+            self.open_docx_gui(filepath)
             return filepath
         else:
             print("File not found")
+        
 
     def open_pdf_gui(self, filepath):
         # delete previous stuffs
@@ -147,7 +152,29 @@ class SentenceRepeater(tk.Frame):
         engine.save_to_file(text, output)
         engine.runAndWait()
         return
-
+    
+    def open_docx_gui(self, filepath):
+        # delete previous stuffs
+        self.canvas.delete(self.frontmsg)
+        self.canvas.delete(self.select_pdf_btn_window)
+        self.canvas.delete(self.ormsg)
+        self.canvas.delete(self.select_docx_btn_window)
+        # create instructional message
+        self.instrmsg = self.canvas.create_text(210, 100, text="Please select number of times you wants to repeat here",
+                                                font=("Cursive", 10), fill="black")
+        # create spinbox
+        self.spinbox_window = self.canvas.create_window(200, 130, width=50,
+                                                        window=self.spinbox)
+        # submit button created
+        self.canvas.create_window(200, 200, width=200, window=self.submit_doc_btn)
+        self.doc_filepath = filepath
+    
+    def submit_doc(self):
+        curr_directory = os.getcwd() # will get current working directory
+        output = fd.asksaveasfilename(initialdir = curr_directory,\
+            title = "Select file",filetypes = (("doc files","*.docx"),("all files","*.*")))
+        doc_repeater(self.doc_filepath, int(self.spinbox.get()), output)                
+        
 
 
 """ main """
