@@ -12,4 +12,4 @@
 
 OR
 
-download the repeater.exe in build
+download the repeater.exe in the dist folder
