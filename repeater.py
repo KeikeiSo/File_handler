@@ -13,6 +13,7 @@ from pdfhandler import pdf_to_text, get_pages
 import os
 import pyttsx3
 from dochandler import doc_repeater
+from chinese_pdf import pdf_to_docx
 
 class SentenceRepeater(tk.Frame):
     def __init__(self, master=None):
@@ -46,6 +47,8 @@ class SentenceRepeater(tk.Frame):
         # create pdf submit button
         self.submit_pdf_btn = tk.Button(root, text="Save as mp3", font=("Times", 15, "bold roman"),
                                          width=20, fg="white", bg="red", command=self.submit_pdf)
+        self.submit_cdoc_btn = tk.Button(root, text="Save as document", font=("Times", 15, "bold roman"),
+                                         width=20, fg="white", bg="red", command=self.submit_cdoc)
         # create doc submit button
         self.submit_doc_btn = tk.Button(root, text="Save as document", font=("Times", 15, "bold roman"),
                                          width=20, fg="white", bg="red", command=self.submit_doc)
@@ -55,7 +58,6 @@ class SentenceRepeater(tk.Frame):
         self.gender.set("female") # default value
         self.select_gender = tk.OptionMenu(root, self.gender, "female", "male")
 
-    
     def create_front(self):
         # create front title
         self.frontmsg = self.canvas.create_text(195, 80, text="Welcome!",
@@ -72,7 +74,7 @@ class SentenceRepeater(tk.Frame):
         filepath = fd.askopenfilename(filetypes=(
             ('PDF files', '*.pdf'), ('All files', '*.*')))
         if filepath:
-            self.open_pdf_gui(filepath)
+            self.chooselang(filepath)
             return filepath
         else:
             print("File not found")
@@ -85,14 +87,12 @@ class SentenceRepeater(tk.Frame):
             return filepath
         else:
             print("File not found")
-        
 
     def open_pdf_gui(self, filepath):
         # delete previous stuffs
-        self.canvas.delete(self.frontmsg)
-        self.canvas.delete(self.select_pdf_btn_window)
-        self.canvas.delete(self.ormsg)
-        self.canvas.delete(self.select_docx_btn_window)
+        self.canvas.delete(self.chinese_btn_window)
+        self.canvas.delete(self.english_btn_window)
+
         # create instructional message
         self.instrmsg = self.canvas.create_text(210, 100, text="Please select number of times you wants to repeat here",
                                                 font=("Cursive", 10), fill="black")
@@ -174,11 +174,73 @@ class SentenceRepeater(tk.Frame):
         output = fd.asksaveasfilename(initialdir = curr_directory,\
             title = "Select file",filetypes = (("doc files","*.docx"),("all files","*.*")))
         doc_repeater(self.doc_filepath, int(self.spinbox.get()), output)                
+    
+    def chooselang(self, filepath):
+        # delete previous stuffs
+        self.canvas.delete(self.frontmsg)
+        self.canvas.delete(self.select_pdf_btn_window)
+        self.canvas.delete(self.ormsg)
+        self.canvas.delete(self.select_docx_btn_window)
+
+        # create traditional chinese button
+        self.chinese_btn = tk.Button(root, text="Traditional Chinese", font=("Times", 15, "bold roman"),
+                                         width=20, fg="white", bg="red", command=lambda: self.chinese(filepath))
+
+        # create english button
+        self.english_btn = tk.Button(root, text="English(US)", font=("Times", 15, "bold roman"),
+                                         width=20, fg="white", bg="red", command=lambda: self.open_pdf_gui(filepath))
+
+        # create new buttons
+        self.chinese_btn_window = self.canvas.create_window(200, 160, width=250,
+                                                               window=self.chinese_btn)
+        self.english_btn_window = self.canvas.create_window(200, 240, width=250,
+                                                                window=self.english_btn)
+
+    def chinese(self, filepath):
+        # delete previous stuffs
+        self.canvas.delete(self.chinese_btn_window)
+        self.canvas.delete(self.english_btn_window)
+
+        # create instructional message
+        self.instrmsg = self.canvas.create_text(210, 100, text="Please select number of times you wants to repeat here",
+                                                font=("Cursive", 10), fill="black")
+        # create spinboc
+        self.spinbox_window = self.canvas.create_window(200, 130, width=50,
+                                                        window=self.spinbox)
+        # message indicating the file that is opened
+        self.msg = self.canvas.create_text(210, 50, text="Opened: " + filepath,
+                                                font=("Times", 10), fill="gray24")
+        
+        # from page to page created
+        self.pdf_pages = get_pages(filepath)
+        num_pages = len(self.pdf_pages)
+        begin = tk.StringVar(root)
+        begin.set("1")
+        self.from_ = tk.Spinbox(root, from_=1, to=num_pages, textvariable=begin, wrap=True)
+        end = tk.StringVar(root)
+        end.set(str(num_pages))
+        self.to = tk.Spinbox(root, from_=1, to=num_pages, textvariable=end, wrap=True)
+        self.frommsg = self.canvas.create_text(90, 170, text="From page: ", font=("Cursive", 10), fill="black")
+        self.from_window = self.canvas.create_window(150, 170, width=50, window=self.from_)
+        self.tomsg = self.canvas.create_text(250, 170, text="To page: ", font=("Cursive", 10), fill="black")
+        self.to_window = self.canvas.create_window(300, 170, width=50, window=self.to)
+        # submit button created
+        self.canvas.create_window(200, 270, width=180, window=self.submit_cdoc_btn)
+    
+    def submit_cdoc(self):
+        curr_directory = os.getcwd() # will get current working directory
+        output = fd.asksaveasfilename(initialdir = curr_directory,\
+            title = "Select file",filetypes = (("doc files","*.docx"),("all files","*.*")))
+        start = int(self.from_.get()) - 1
+        end = int(self.to.get()) 
+        freq = int(self.spinbox.get())
+        pdf_to_docx(self.pdf_pages, start, end, freq, output)
+        
         
 
-
 """ main """
-root = tk.Tk()
-canvas = SentenceRepeater(master=root)
-canvas.create_front()
-canvas.mainloop()
+if __name__ == '__main__':
+    root = tk.Tk()
+    canvas = SentenceRepeater(master=root)
+    canvas.create_front()
+    canvas.mainloop()
