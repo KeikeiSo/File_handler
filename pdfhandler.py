@@ -30,8 +30,6 @@ tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
 """ functions """
 
 # return a list of sentences from the pdf
-
-
 def extract_sentences(
     page,
     x_tolerance=DEFAULT_X_TOLERANCE,
@@ -126,7 +124,6 @@ def extract_content(
     content = tokenizer.tokenize(coll)
 
     return content
-
 
 # helper function for sentence_repeater
 # return the starting index (-1 if not found)
@@ -271,15 +268,17 @@ def pdf_to_text(pages, start, end, frequency):
         section = sentence_repeater(page, frequency)
         sections.append(section)
     
+    """ print to text file, delete afterward
     content = []
     for section in sections:
         content.append('\n'.join(section))
     text = '\n'.join(content) 
     text = trim_text(text, 90)
 
-    text_file = open("C:/Users/calli/Testing/text.txt", "w")
+    text_file = open("C:/Users/calli/Testing/chinesetext.txt", "w")
     text_file.write(text)
     text_file.close()
+    """
 
     return sections
 
