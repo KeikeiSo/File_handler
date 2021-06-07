@@ -14,6 +14,7 @@ from collections import defaultdict
 import re
 import fpdf
 import nltk.data
+from docx import Document
 
 
 """ Gobal variables """
@@ -285,6 +286,13 @@ def pdf_to_text(pages, start, end, frequency):
 def get_pages(filepath):
     pdf = pdfplumber.open(filepath)
     return pdf.pages
+
+def pdf_to_endocx(pages, start, end, frequency, outfile):
+    sections = pdf_to_text(pages, start, end, frequency)
+    document = Document()
+    for section in sections:
+        document.add_paragraph("\n".join(section))
+    document.save(outfile)
     
 """ main """
 if __name__ == '__main__':

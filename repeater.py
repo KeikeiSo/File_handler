@@ -9,7 +9,7 @@ author: Qiqi Su
 """ Import statements """
 import tkinter as tk
 from tkinter import filedialog as fd
-from pdfhandler import pdf_to_text, get_pages
+from pdfhandler import pdf_to_text, get_pages, pdf_to_endocx
 import os
 import pyttsx3
 from dochandler import doc_repeater
@@ -49,6 +49,8 @@ class SentenceRepeater(tk.Frame):
                                          width=20, fg="white", bg="red", command=self.submit_pdf)
         self.submit_cdoc_btn = tk.Button(root, text="Save as document", font=("Times", 15, "bold roman"),
                                          width=20, fg="white", bg="red", command=self.submit_cdoc)
+        self.submit_edoc_btn = tk.Button(root, text="Save as document", font=("Times", 15, "bold roman"),
+                                         width=20, fg="white", bg="red", command=self.submit_edoc)
         # create doc submit button
         self.submit_doc_btn = tk.Button(root, text="Save as document", font=("Times", 15, "bold roman"),
                                          width=20, fg="white", bg="red", command=self.submit_doc)
@@ -123,6 +125,7 @@ class SentenceRepeater(tk.Frame):
         self.gender_window = self.canvas.create_window(280, 210, width=80, window=self.select_gender)
         # submit button created
         self.canvas.create_window(200, 270, width=140, window=self.submit_pdf_btn)
+        self.canvas.create_window(200, 320, width=180, window=self.submit_edoc_btn)
 
     def list_to_text(self, pages):
         content = []
@@ -235,7 +238,15 @@ class SentenceRepeater(tk.Frame):
         end = int(self.to.get()) 
         freq = int(self.spinbox.get())
         pdf_to_docx(self.pdf_pages, start, end, freq, output)
-        
+    
+    def submit_edoc(self):
+        curr_directory = os.getcwd() # will get current working directory
+        output = fd.asksaveasfilename(initialdir = curr_directory,\
+            title = "Select file",filetypes = (("doc files","*.docx"),("all files","*.*")))
+        start = int(self.from_.get()) - 1
+        end = int(self.to.get()) 
+        freq = int(self.spinbox.get())
+        pdf_to_endocx(self.pdf_pages, start, end, freq, output)
         
 
 """ main """
