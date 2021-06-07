@@ -1,5 +1,5 @@
 # File_handler
- An small application using python tkinter that duplicate each senetence in a pdf or docx file four times
+ An small application using python tkinter that duplicate each senetence in a pdf or docx file n times
 
 # Installation
 1. Clone or download this project.
@@ -12,4 +12,4 @@
 
 OR
 
-download the repeater.exe in build
+download the repeater.exe in the dist folder
