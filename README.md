@@ -6,7 +6,8 @@
 
 2. Create an isolated Python environment
 
-3. On Windows type in the command prompt: pip install -r requirement.txt
+3. On Windows type in the command prompt: 
+```pip install -r requirement.txt```
 
 4. Then run the python script repeater.py
 
