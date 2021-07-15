@@ -6,7 +6,7 @@
 
 2. Create an isolated Python environment
 
-3. On Windows type in the command prompt: 
+3. On Windows type in the command prompt:   
 ```pip install -r requirement.txt```
 
 4. Then run the python script repeater.py
@@ -21,14 +21,14 @@ OR
 
 2. Create an isolated Python environment
 
-3. On Windows type in the command prompt: 
+3. On Windows type in the command prompt:   
 ```pip install -r requirement.txt```
 
 4. In the folder that contain the python script pdf2doc.py or cpdf2doc.py, 
-hold shift and right click, select open powershell, and in it type: 
+hold shift and right click, select open powershell, and in it type:   
 ```python pdf2doc.py -h```
 
-p.s. there may be time that you are asked to type in the comment prompt:
+p.s. there may be time that you are asked to type in the comment prompt:  
 ```>python```  
 ```>>>import nltk```  
 ```>>>nltk.download('punkt')```  
