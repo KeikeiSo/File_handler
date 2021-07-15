@@ -29,7 +29,7 @@ hold shift and right click, select open powershell, and in it type:
 ```python pdf2doc.py -h```
 
 p.s. there may be time that you are asked to type in the comment prompt:
-```>python```
-```>>>import nltk```
-```>>>nltk.download('punkt')```
-```>>>quit()```
+```>python```  
+```>>>import nltk```  
+```>>>nltk.download('punkt')```  
+```>>>quit()```  
