@@ -151,16 +151,6 @@ def sentence_repeater(page, frequency):
     context = extract_content(page)
     sentences = extract_sentences(page)
     
-
-    document1 = Document()
-    document1.add_paragraph("\n".join(context))
-    document1.save("C:/Users/calli/Testing/text.docx")
-
-    document2 = Document()
-    document2.add_paragraph("\n".join(sentences))
-    document2.save("C:/Users/calli/Testing/sentences.docx")
-
-
     index = 0
 
     # find the place first sentence match
@@ -251,17 +241,13 @@ def pdf_to_docx(pages, start, end, frequency, outfile):
     
 """ main """
 if __name__ == '__main__':
-    pages = get_pages("C:/Users/calli/Testing/Cap 622 PDF (01-08-2019) (Traditional Chinese).pdf")
-    sections = pdf_to_text(pages, 85, 86, 2)
+    pages = get_pages("C:/Users/calli/Testing/test0-converted.pdf")
+    pdf_to_docx(pages, 0, 1, 2, "C:/Users/calli/Testing/test0-repeated.docx")
     """
     content = []
     for section in sections:
         content.append('\n'.join(section))
     mytext = '\n'.join(content)
     """
-    document = Document()
-    for section in sections:
-        document.add_paragraph("\n".join(section))
-    document.save("C:/Users/calli/Testing/repeated.docx")
 
 
